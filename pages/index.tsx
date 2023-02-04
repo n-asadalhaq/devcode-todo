@@ -1,36 +1,16 @@
-import { Button } from '@mantine/core';
-import Head from 'next/head';
-import Image from 'next/image';
-
-import styles from '@/pages/index.module.css';
+import { AppShell, Button, Header, Navbar, Title } from '@mantine/core';
 
 export default function Home() {
   return (
-    <>
-      <Button variant="gradient" gradient={{ from: 'indigo', to: 'cyan' }}>
-        Indigo cyan
-      </Button>
-      <Button
-        variant="gradient"
-        gradient={{ from: 'teal', to: 'lime', deg: 105 }}
-      >
-        Lime green
-      </Button>
-      <Button
-        variant="gradient"
-        gradient={{ from: 'teal', to: 'blue', deg: 60 }}
-      >
-        Teal blue
-      </Button>
-      <Button variant="gradient" gradient={{ from: 'orange', to: 'red' }}>
-        Orange red
-      </Button>
-      <Button
-        variant="gradient"
-        gradient={{ from: '#ed6ea0', to: '#ec8c69', deg: 35 }}
-      >
-        Peach
-      </Button>
-    </>
+    <AppShell
+      padding="md"
+      header={
+        <Header height={60}>
+          <Title>TO DO LIST APP</Title>
+        </Header>
+      }
+    >
+      Activity
+    </AppShell>
   );
 }

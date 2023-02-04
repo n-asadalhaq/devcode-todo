@@ -14,6 +14,7 @@
     "@mantine/core": "^5.10.3",
     "@mantine/hooks": "^5.10.3",
     "@mantine/next": "^5.10.3",
+    "lodash": "^4.17.21",
     "next": "latest",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"
@@ -22,6 +23,7 @@
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "13.2.0",
     "@testing-library/user-event": "14.2.0",
+    "@types/lodash": "^4.14.191",
     "@types/react": "18.0.9",
     "@types/testing-library__jest-dom": "5.14.5",
     "eslint-config-next": "^13.1.6",

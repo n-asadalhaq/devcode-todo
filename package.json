@@ -6,7 +6,8 @@
     "build": "next build",
     "start": "next start",
     "test": "jest --watch",
-    "test:ci": "jest --ci"
+    "test:ci": "jest --ci",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -31,8 +32,10 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-testing-library": "^5.10.0",
+    "husky": "^8.0.0",
     "jest": "28.1.0",
     "jest-environment-jsdom": "28.1.0",
+    "lint-staged": "^13.1.0",
     "prettier": "^2.8.3",
     "prettier-eslint": "^15.0.1",
     "typescript": "4.6.4"

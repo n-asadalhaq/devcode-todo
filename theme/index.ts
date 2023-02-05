@@ -41,7 +41,7 @@ export const theme: MantineThemeOverride = {
       '#14302C',
     ],
     priority: ['#8942C1', '#428BC1', '#00A790', '#F8A541', '#ED4C5C'],
-    gray: ['#F8F9FA', '#F4F4F4', '#E9ECEF', '#888888'],
+    gray: ['#F8F9FA', '#F4F4F4', '#E9ECEF', '#888888', '#4A4A4A'],
   },
   primaryColor: 'blue',
   primaryShade: 3,

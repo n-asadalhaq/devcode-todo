@@ -14,6 +14,7 @@ import { Activity } from '@/types/index';
 
 interface ActivityItemProps {
   activity: Activity;
+  onDeleteIconClick: VoidFunction;
 }
 
 const dateFormatter = new Intl.DateTimeFormat('id', {
@@ -22,7 +23,10 @@ const dateFormatter = new Intl.DateTimeFormat('id', {
   year: 'numeric',
 });
 
-export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
+export const ActivityItem: React.FC<ActivityItemProps> = ({
+  activity,
+  onDeleteIconClick,
+}) => {
   return (
     <Card
       shadow="sm"
@@ -39,7 +43,7 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
           <Text size="xs" color="gray.3">
             {dateFormatter.format(activity.createdAt)}
           </Text>
-          <UnstyledButton>
+          <UnstyledButton onClick={onDeleteIconClick}>
             <Image
               src="/assets/icons/trash.svg"
               w={24}

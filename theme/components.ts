@@ -4,6 +4,7 @@ export const components: MantineThemeComponents = {
   Button: {
     defaultProps: {
       radius: '45px',
+      miw: 150,
     },
   },
 };

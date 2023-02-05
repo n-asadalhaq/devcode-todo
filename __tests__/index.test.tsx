@@ -42,7 +42,7 @@ describe('Home', () => {
 
   describe('ActivityList', () => {
     it('renders an illustration if activity list is empty', () => {
-      render(<ActivityList activities={[]} />);
+      render(<ActivityList activities={[]} onDeleteClick={() => {}} />);
 
       const illustration = screen.getByAltText(
         "You don't have any activity. Click add button to create one.",

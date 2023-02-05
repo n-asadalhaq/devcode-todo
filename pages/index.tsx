@@ -10,34 +10,54 @@ import {
   SimpleGrid,
   Title,
 } from '@mantine/core';
-import { isEmpty } from 'lodash';
+import { useDisclosure } from '@mantine/hooks';
+import { isEmpty, isNil } from 'lodash';
 import Image from 'next/image';
+import { useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 
 import { ActivityItem } from '@/components/activity-item';
+import { RemoveItemDialog } from '@/components/dialogs/remove-item';
 import { PageHeader } from '@/components/page-header';
 import { cySelectors } from '@/constants/cy-selectors';
 import { Activity } from '@/types/index';
 
 import { baseUrl, email } from '../constants/api';
 
-interface ActivityListProps {
-  activities: Activity[];
-}
-
 const pageSpacings = {
   horizontal: '220px',
 };
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetchActivities = (url: string) =>
+  fetch(`${url}?email=${email}`)
+    .then((res) => res.json())
+    .then((res) => ({
+      ...res,
+      data: res.data.map((item: any) => ({
+        ...item,
+        createdAt: new Date(item?.created_at),
+      })),
+    }));
+
+const deleteActivity = async (
+  url: string,
+  { arg }: { arg: { id: number } },
+) => {
+  return await fetch(`${url}/${arg.id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: '',
+  });
+};
 
 const createActivity = async (url: string) => {
   return await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: JSON.stringify({
       title: 'New Activity',
@@ -46,16 +66,21 @@ const createActivity = async (url: string) => {
   });
 };
 
-export default function Home() {
+function Home() {
   const { data, isLoading, isValidating } = useSWR(
-    `${baseUrl}/activity-groups?email=${email}`,
-    fetcher,
+    `${baseUrl}/activity-groups`,
+    fetchActivities,
   );
 
-  const { trigger, isMutating } = useSWRMutation(
-    `${baseUrl}/activity-groups?email=${email}`,
-    createActivity,
-  );
+  const activities: Activity[] = isNil(data?.data) ? [] : data.data;
+
+  const { trigger: triggerCreate, isMutating: isCreateLoading } =
+    useSWRMutation(`${baseUrl}/activity-groups`, createActivity);
+
+  const { trigger: triggerDelete, isMutating: isDeleteLoading } =
+    useSWRMutation(`${baseUrl}/activity-groups`, deleteActivity);
+
+  const [deleteTarget, setDeleteTarget] = useState<Activity | null>(null);
 
   return (
     <AppShell
@@ -96,7 +121,7 @@ export default function Home() {
               aria-label="tambah"
               data-cy={cySelectors['activity-add-button']}
               onClick={() => {
-                trigger();
+                triggerCreate();
               }}
               leftIcon={
                 <Image
@@ -112,7 +137,7 @@ export default function Home() {
           }
         />
         <Box w="100%" mih="100%">
-          {isLoading || isValidating || isMutating ? (
+          {isLoading || isValidating || isCreateLoading || isDeleteLoading ? (
             <Center h="100%">
               <Flex direction="column" align="center" justify="center">
                 <Loader />
@@ -120,7 +145,34 @@ export default function Home() {
               </Flex>
             </Center>
           ) : (
-            <ActivityList activities={data?.data || []} />
+            <>
+              <RemoveItemDialog
+                isLoading={isDeleteLoading}
+                dialogMessage={
+                  deleteTarget && (
+                    <Text size="md" align="center">
+                      Apakah anda yakin menghapus activity
+                      <Text weight="700">“{deleteTarget.title}”?</Text>
+                    </Text>
+                  )
+                }
+                cyId={cySelectors['modal-delete']}
+                onClose={() => {
+                  setDeleteTarget(null);
+                }}
+                opened={!isNil(deleteTarget)}
+                onConfirmClick={async () => {
+                  if (isNil(deleteTarget)) return;
+
+                  await triggerDelete({ id: deleteTarget.id });
+                  setDeleteTarget(null);
+                }}
+              />
+              <ActivityList
+                activities={activities}
+                onDeleteClick={(id) => setDeleteTarget(id)}
+              />
+            </>
           )}
         </Box>
       </Flex>
@@ -128,7 +180,15 @@ export default function Home() {
   );
 }
 
-export const ActivityList: React.FC<ActivityListProps> = ({ activities }) => {
+interface ActivityListProps {
+  activities: Activity[];
+  onDeleteClick: (activity: Activity) => any;
+}
+
+const ActivityList: React.FC<ActivityListProps> = ({
+  activities,
+  onDeleteClick,
+}) => {
   return (
     <Box w="100%">
       {isEmpty(activities) ? (
@@ -143,10 +203,17 @@ export const ActivityList: React.FC<ActivityListProps> = ({ activities }) => {
       ) : (
         <SimpleGrid cols={4} spacing={26}>
           {activities.map((item) => (
-            <ActivityItem key={item.id} activity={item} />
+            <ActivityItem
+              key={item.id}
+              activity={item}
+              onDeleteIconClick={() => onDeleteClick(item)}
+            />
           ))}
         </SimpleGrid>
       )}
     </Box>
   );
 };
+
+export { ActivityList, Home };
+export default Home;

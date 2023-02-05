@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { SWRConfig } from 'swr';
 
 import { ActivityList } from '@/components/activity-list';
+import { DefaultLayout } from '@/components/layouts/default';
 import Home from '@/pages/index';
 
 import { dummyActivities } from '../mocks/data/activity';
@@ -11,7 +12,9 @@ const AllTheProviders: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+    <SWRConfig value={{ provider: () => new Map() }}>
+      <DefaultLayout>{children}</DefaultLayout>
+    </SWRConfig>
   );
 };
 

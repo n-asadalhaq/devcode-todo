@@ -2,6 +2,7 @@ import { MantineProvider } from '@mantine/core';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 
+import { DefaultLayout } from '@/components/layouts/default';
 import { theme } from 'theme';
 
 import '../styles/globals.css';
@@ -20,7 +21,9 @@ export default function App(props: AppProps) {
       </Head>
 
       <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
-        <Component {...pageProps} />
+        <DefaultLayout>
+          <Component {...pageProps} />
+        </DefaultLayout>
       </MantineProvider>
     </>
   );

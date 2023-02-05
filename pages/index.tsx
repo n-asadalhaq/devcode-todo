@@ -3,10 +3,7 @@ import {
   Box,
   Button,
   Flex,
-  Grid,
   Header,
-  List,
-  Navbar,
   SimpleGrid,
   Title,
 } from '@mantine/core';
@@ -16,13 +13,10 @@ import Image from 'next/image';
 import { ActivityItem } from '@/components/activity-item';
 import { PageHeader } from '@/components/page-header';
 import { cySelectors } from '@/constants/cy-selectors';
-
-interface ActivityItem {
-  id: number;
-}
+import { Activity } from '@/types/index';
 
 interface ActivityListProps {
-  activities: ActivityItem[];
+  activities: Activity[];
 }
 
 const pageSpacings = {
@@ -88,19 +82,9 @@ export const ActivityList: React.FC<ActivityListProps> = ({ activities }) => {
         </Flex>
       ) : (
         <SimpleGrid cols={4} spacing={26}>
-          {Array(11)
-            .fill(0)
-            .map((i, idx): number => i + idx)
-            .map((item) => (
-              <ActivityItem
-                key={item}
-                activity={{
-                  id: item,
-                  title: `Activity ${item}`,
-                  created_at: new Date(),
-                }}
-              />
-            ))}
+          {activities.map((item) => (
+            <ActivityItem key={item.id} activity={item} />
+          ))}
         </SimpleGrid>
       )}
     </Box>

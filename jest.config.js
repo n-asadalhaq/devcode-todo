@@ -18,7 +18,7 @@ const customJestConfig = {
   },
   testEnvironment: 'jest-environment-jsdom',
   collectCoverage: true,
-  collectCoverageFrom: ['pages/**.{ts,tsx}'],
+  collectCoverageFrom: ['pages/**.{ts,tsx}', 'components/**/**.{ts,tsx}'],
   coveragePathIgnorePatterns: ['_document.tsx', '_app.tsx'],
   coverageDirectory: './coverage',
 };

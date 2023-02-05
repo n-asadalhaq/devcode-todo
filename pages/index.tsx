@@ -7,11 +7,13 @@ import {
   Header,
   List,
   Navbar,
+  SimpleGrid,
   Title,
 } from '@mantine/core';
 import { isEmpty } from 'lodash';
 import Image from 'next/image';
 
+import { ActivityItem } from '@/components/activity-item';
 import { PageHeader } from '@/components/page-header';
 import { cySelectors } from '@/constants/cy-selectors';
 
@@ -64,8 +66,8 @@ export default function Home() {
           }}
           trailing={<Button>Tambah</Button>}
         />
-        <Box w="100%" px={pageSpacings.horizontal}>
-          <ActivityList activities={[]} />
+        <Box w="100%">
+          <ActivityList activities={[]} />{' '}
         </Box>
       </Flex>
     </AppShell>
@@ -84,7 +86,23 @@ export const ActivityList: React.FC<ActivityListProps> = ({ activities }) => {
             alt="You don't have any activity. Click add button to create one."
           />
         </Flex>
-      ) : null}
+      ) : (
+        <SimpleGrid cols={4} spacing={26}>
+          {Array(11)
+            .fill(0)
+            .map((i, idx): number => i + idx)
+            .map((item) => (
+              <ActivityItem
+                key={item}
+                activity={{
+                  id: item,
+                  title: `Activity ${item}`,
+                  created_at: new Date(),
+                }}
+              />
+            ))}
+        </SimpleGrid>
+      )}
     </Box>
   );
 };

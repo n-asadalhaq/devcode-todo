@@ -2,7 +2,8 @@ import { render, RenderOptions, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SWRConfig } from 'swr';
 
-import Home, { ActivityList } from '@/pages/index';
+import { ActivityList } from '@/components/activity-list';
+import Home from '@/pages/index';
 
 import { dummyActivities } from '../mocks/data/activity';
 

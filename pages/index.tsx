@@ -7,17 +7,15 @@ import {
   Flex,
   Header,
   Loader,
-  SimpleGrid,
   Title,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { isEmpty, isNil } from 'lodash';
 import Image from 'next/image';
 import { useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 
-import { ActivityItem } from '@/components/activity-item';
+import { ActivityList } from '@/components/activity-list';
 import { RemoveItemDialog } from '@/components/dialogs/remove-item';
 import { PageHeader } from '@/components/page-header';
 import { cySelectors } from '@/constants/cy-selectors';
@@ -180,40 +178,4 @@ function Home() {
   );
 }
 
-interface ActivityListProps {
-  activities: Activity[];
-  onDeleteClick: (activity: Activity) => any;
-}
-
-const ActivityList: React.FC<ActivityListProps> = ({
-  activities,
-  onDeleteClick,
-}) => {
-  return (
-    <Box w="100%">
-      {isEmpty(activities) ? (
-        <Flex justify="center" align="center">
-          <Image
-            width={767}
-            height={490}
-            src="/assets/illustrations/empty-state.svg"
-            alt="You don't have any activity. Click add button to create one."
-          />
-        </Flex>
-      ) : (
-        <SimpleGrid cols={4} spacing={26}>
-          {activities.map((item) => (
-            <ActivityItem
-              key={item.id}
-              activity={item}
-              onDeleteIconClick={() => onDeleteClick(item)}
-            />
-          ))}
-        </SimpleGrid>
-      )}
-    </Box>
-  );
-};
-
-export { ActivityList, Home };
 export default Home;

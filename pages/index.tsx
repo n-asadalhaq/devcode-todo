@@ -32,11 +32,10 @@ const pageSpacings = {
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Home() {
-  const {
-    data: activities,
-    isLoading,
-    error,
-  } = useSWR(`${baseUrl}/activity-groups?email=n.asadalhaq@gmail.com`, fetcher);
+  const { data, isLoading, isValidating, error } = useSWR(
+    `${baseUrl}/activity-groups?email=n.asadalhaq@gmail.com`,
+    fetcher,
+  );
 
   return (
     <AppShell
@@ -75,7 +74,7 @@ export default function Home() {
           trailing={<Button>Tambah</Button>}
         />
         <Box w="100%" mih="100%">
-          {isLoading ? (
+          {isLoading || isValidating ? (
             <Center h="100%">
               <Flex direction="column" align="center" justify="center">
                 <Loader />
@@ -83,7 +82,7 @@ export default function Home() {
               </Flex>
             </Center>
           ) : (
-            <ActivityList activities={activities.data} />
+            <ActivityList activities={data?.data || []} />
           )}
         </Box>
       </Flex>

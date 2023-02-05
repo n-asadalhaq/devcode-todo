@@ -1,37 +1,33 @@
-import { render, screen } from '@testing-library/react';
+import { render, RenderOptions, screen, waitFor } from '@testing-library/react';
+import { SWRConfig } from 'swr';
 
 import Home, { ActivityList } from '@/pages/index';
 
-import { Activity } from '../types/index';
+import { dummyActivities } from '../mocks/data/activity';
 
-/**
- * Contain 11 activities.
- * Each activities' createdAt set to {index + 1}/January/2023.
- * Each activities' title set to "Activity {index + 1}""
- */
-const dummyActivities: Activity[] = Array(11)
-  .fill(1)
-  .map((i, idx): Activity => {
-    const id = i + idx;
+const AllTheProviders: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  return (
+    <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+  );
+};
 
-    const createdAt = new Date();
-
-    createdAt.setDate(i);
-    createdAt.setMonth(0);
-    createdAt.setFullYear(2023);
-
-    return {
-      title: `Activity test ${id}`,
-      id,
-      createdAt,
-    };
+const customRender = (ui: React.ReactElement, options: RenderOptions = {}) =>
+  render(ui, {
+    wrapper: AllTheProviders,
+    ...options,
   });
 
 describe('Home', () => {
-  it('renders a heading', () => {
-    render(<Home />);
+  it('renders a heading', async () => {
+    customRender(<Home />);
 
-    const heading = screen.getByRole('heading', {
+    await waitFor(() => {
+      expect(screen.queryByText(/memuat activity/i)).not.toBeInTheDocument();
+    });
+
+    const heading = await screen.findByRole('heading', {
       name: /TO DO LIST APP/,
     });
 
@@ -49,8 +45,12 @@ describe('Home', () => {
       expect(illustration).toBeInTheDocument();
     });
 
-    it('renders list of activities', () => {
-      render(<ActivityList activities={dummyActivities} />);
+    it('renders list of activities', async () => {
+      customRender(<Home />);
+
+      await waitFor(() => {
+        expect(screen.queryByText(/memuat activity/i)).not.toBeInTheDocument();
+      });
 
       const activityItems = screen.getAllByText(/Activity test [1-9]{1,2}/);
 

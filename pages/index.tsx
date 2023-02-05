@@ -2,18 +2,24 @@ import {
   AppShell,
   Box,
   Button,
+  Center,
+  Text,
   Flex,
   Header,
+  Loader,
   SimpleGrid,
   Title,
 } from '@mantine/core';
 import { isEmpty } from 'lodash';
 import Image from 'next/image';
+import useSWR from 'swr';
 
 import { ActivityItem } from '@/components/activity-item';
 import { PageHeader } from '@/components/page-header';
 import { cySelectors } from '@/constants/cy-selectors';
 import { Activity } from '@/types/index';
+
+import { baseUrl } from '../constants';
 
 interface ActivityListProps {
   activities: Activity[];
@@ -23,7 +29,15 @@ const pageSpacings = {
   horizontal: '220px',
 };
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export default function Home() {
+  const {
+    data: activities,
+    isLoading,
+    error,
+  } = useSWR(`${baseUrl}/activity-groups?email=n.asadalhaq@gmail.com`, fetcher);
+
   return (
     <AppShell
       padding="md"
@@ -52,7 +66,7 @@ export default function Home() {
         },
       })}
     >
-      <Flex direction="column" px={pageSpacings.horizontal}>
+      <Flex direction="column" px={pageSpacings.horizontal} h="100%">
         <PageHeader
           title="Activity"
           titleProps={{
@@ -60,8 +74,17 @@ export default function Home() {
           }}
           trailing={<Button>Tambah</Button>}
         />
-        <Box w="100%">
-          <ActivityList activities={[]} />{' '}
+        <Box w="100%" mih="100%">
+          {isLoading ? (
+            <Center h="100%">
+              <Flex direction="column" align="center" justify="center">
+                <Loader />
+                <Text color="gray">Memuat activity</Text>
+              </Flex>
+            </Center>
+          ) : (
+            <ActivityList activities={activities.data} />
+          )}
         </Box>
       </Flex>
     </AppShell>

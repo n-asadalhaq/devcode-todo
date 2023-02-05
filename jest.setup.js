@@ -20,3 +20,5 @@ afterEach(() => {
 afterAll(() => {
   server.close();
 });
+
+jest.mock('next/router', () => require('next-router-mock'));

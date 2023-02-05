@@ -43,7 +43,7 @@ export default function Home() {
               data-cy={cySelectors['header-title']}
               size="h2"
               order={1}
-              color="white.0"
+              color="white"
             >
               TO DO LIST APP
             </Title>

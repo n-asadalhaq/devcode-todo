@@ -1,4 +1,5 @@
 import { render, RenderOptions, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { SWRConfig } from 'swr';
 
 import Home, { ActivityList } from '@/pages/index';
@@ -17,6 +18,11 @@ const customRender = (ui: React.ReactElement, options: RenderOptions = {}) =>
   render(ui, {
     wrapper: AllTheProviders,
     ...options,
+  });
+
+const waitForFetchActivities = async () =>
+  waitFor(() => {
+    expect(screen.queryByText(/memuat activity/i)).not.toBeInTheDocument();
   });
 
 describe('Home', () => {
@@ -48,9 +54,7 @@ describe('Home', () => {
     it('renders list of activities', async () => {
       customRender(<Home />);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/memuat activity/i)).not.toBeInTheDocument();
-      });
+      await waitForFetchActivities();
 
       const activityItems = screen.getAllByText(/Activity test [1-9]{1,2}/);
 
@@ -65,7 +69,19 @@ describe('Home', () => {
   describe('CRUD', () => {
     it.todo('removes an activity');
 
-    it.todo('adds an activity');
+    it.skip('adds an activity', async () => {
+      const user = userEvent.setup();
+
+      customRender(<Home />);
+
+      await waitForFetchActivities();
+
+      await user.click(screen.getByRole('button', { name: /tambah/i }));
+
+      await waitForFetchActivities();
+
+      expect(await screen.findByText(/new activity/i)).toBeInTheDocument();
+    });
     it.todo('removes an activity');
   });
 });

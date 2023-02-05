@@ -13,13 +13,14 @@ import {
 import { isEmpty } from 'lodash';
 import Image from 'next/image';
 import useSWR from 'swr';
+import useSWRMutation from 'swr/mutation';
 
 import { ActivityItem } from '@/components/activity-item';
 import { PageHeader } from '@/components/page-header';
 import { cySelectors } from '@/constants/cy-selectors';
 import { Activity } from '@/types/index';
 
-import { baseUrl } from '../constants';
+import { baseUrl, email } from '../constants/api';
 
 interface ActivityListProps {
   activities: Activity[];
@@ -31,10 +32,29 @@ const pageSpacings = {
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
+const createActivity = async (url: string) => {
+  return await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: JSON.stringify({
+      title: 'New Activity',
+      email,
+    }),
+  });
+};
+
 export default function Home() {
-  const { data, isLoading, isValidating, error } = useSWR(
-    `${baseUrl}/activity-groups?email=n.asadalhaq@gmail.com`,
+  const { data, isLoading, isValidating } = useSWR(
+    `${baseUrl}/activity-groups?email=${email}`,
     fetcher,
+  );
+
+  const { trigger, isMutating } = useSWRMutation(
+    `${baseUrl}/activity-groups?email=${email}`,
+    createActivity,
   );
 
   return (
@@ -71,10 +91,28 @@ export default function Home() {
           titleProps={{
             'data-cy': cySelectors['activity-title'],
           }}
-          trailing={<Button>Tambah</Button>}
+          trailing={
+            <Button
+              aria-label="tambah"
+              data-cy={cySelectors['activity-add-button']}
+              onClick={() => {
+                trigger();
+              }}
+              leftIcon={
+                <Image
+                  src="/assets/icons/add.svg"
+                  width={14}
+                  height={14}
+                  alt="Tambah"
+                />
+              }
+            >
+              Tambah
+            </Button>
+          }
         />
         <Box w="100%" mih="100%">
-          {isLoading || isValidating ? (
+          {isLoading || isValidating || isMutating ? (
             <Center h="100%">
               <Flex direction="column" align="center" justify="center">
                 <Loader />

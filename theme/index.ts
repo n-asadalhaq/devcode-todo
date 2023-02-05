@@ -1,5 +1,8 @@
 import { MantineThemeOverride } from '@mantine/core';
 
+import { components } from './components';
+import { typography } from './typography';
+
 export const theme: MantineThemeOverride = {
   colors: {
     blue: [
@@ -38,13 +41,13 @@ export const theme: MantineThemeOverride = {
       '#14302C',
     ],
     priority: ['#8942C1', '#428BC1', '#00A790', '#F8A541', '#ED4C5C'],
-    white: ['#FFF', '#F4F4F4'],
+    gray: ['#F8F9FA', '#F4F4F4', '#E9ECEF'],
   },
   primaryColor: 'blue',
   primaryShade: 3,
-  fontFamily: 'Poppins, sans-serif',
-  headings: { fontFamily: 'Poppins, sans-serif', fontWeight: '700' },
   colorScheme: 'light',
+  components,
+  ...typography,
 };
 
 export const semanticColors = {

@@ -45,7 +45,8 @@
             "alphabetize": {
               "order": "asc",
               "caseInsensitive": true
-            }
+            },
+            "distinctGroup": false
           }
         ],
         "no-underscore-dangle": ["off"],

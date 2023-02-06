@@ -10,7 +10,7 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil, toLower } from 'lodash';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -260,10 +260,14 @@ const sortMethods = {
     return todos.sort((a, b) => b.id - a.id);
   },
   alphabetAsc(todos: Todo[]) {
-    return todos.sort((a, b) => a.title.localeCompare(b.title));
+    return todos.sort((a, b) =>
+      toLower(a.title).localeCompare(toLower(b.title)),
+    );
   },
   alphabetDesc(todos: Todo[]) {
-    return todos.sort((a, b) => b.title.localeCompare(a.title));
+    return todos.sort((a, b) =>
+      toLower(b.title).localeCompare(toLower(a.title)),
+    );
   },
   activeFirst(todos: Todo[]) {
     return todos.sort((a, b) => (a.isActive ? -1 : 0));

@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 // import { cySelectors } from '@/constants/cy-selectors';
 
-interface RemoveItemDialog extends ModalProps {
+interface RemoveItemModal extends ModalProps {
   dialogMessage: string | React.ReactNode;
   // TODO: better typing
   // cyId: keyof typeof cySelectors;
@@ -12,7 +12,7 @@ interface RemoveItemDialog extends ModalProps {
   isLoading?: boolean;
 }
 
-export const RemoveItemDialog: React.FC<RemoveItemDialog> = ({
+export const RemoveItemModal: React.FC<RemoveItemModal> = ({
   opened,
   dialogMessage,
   cyId,
@@ -47,13 +47,13 @@ export const RemoveItemDialog: React.FC<RemoveItemDialog> = ({
                 Batal
               </Text>
             </Button>
-            <Button bg="red.2" size="lg" loading={isLoading}>
-              <Text
-                color="white"
-                size="md"
-                weight="600"
-                onClick={onConfirmClick}
-              >
+            <Button
+              bg="red.2"
+              size="lg"
+              loading={isLoading}
+              onClick={onConfirmClick}
+            >
+              <Text color="white" size="md" weight="600">
                 Hapus
               </Text>
             </Button>

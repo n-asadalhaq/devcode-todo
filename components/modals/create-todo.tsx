@@ -8,7 +8,7 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import { startCase } from 'lodash';
+import { initial, isNil, startCase } from 'lodash';
 import { useEffect, useState } from 'react';
 
 import { todoPriority } from '@/constants/todo-priority';
@@ -16,10 +16,11 @@ import { NewTodo, Todo, TodoPriority } from '@/types/index';
 
 // import { cySelectors } from '@/constants/cy-selectors';
 
-interface CreateTodoDialog extends ModalProps {
+interface CreateTodoModal extends ModalProps {
   // TODO: better typing
   // cyId: keyof typeof cySelectors;
   cyId: string;
+  initialTodo?: Todo | null;
   onConfirmClick: (newTodo: NewTodo) => void;
   isLoading?: boolean;
 }
@@ -28,25 +29,34 @@ const initNewTodo: NewTodo = {
   title: '',
   priority: 'very-high',
 };
-const CreateTodoDialog: React.FC<CreateTodoDialog> = ({
+const CreateTodoModal: React.FC<CreateTodoModal> = ({
   opened,
+  initialTodo,
   cyId,
   onClose,
   onConfirmClick,
   isLoading,
 }) => {
-  const [newTodo, setNewTodo] = useState<NewTodo>(initNewTodo);
+  const [newTodo, setNewTodo] = useState<NewTodo>(
+    !isNil(initialTodo) ? initialTodo : initNewTodo,
+  );
 
   const priorityOptions = todoPriority.map((p) => ({
     value: p,
-    label: startCase(p),
+    label: startCase(p === 'normal' ? 'medium' : p),
   }));
+
+  useEffect(() => {
+    if (!isNil(initialTodo)) {
+      setNewTodo(initialTodo);
+    }
+  }, [opened, initialTodo]);
 
   useEffect(() => {
     if (!opened) {
       setNewTodo(initNewTodo);
     }
-  }, [opened, newTodo]);
+  }, [opened]);
 
   return (
     <Modal
@@ -70,7 +80,13 @@ const CreateTodoDialog: React.FC<CreateTodoDialog> = ({
 
           <Select
             data={priorityOptions}
-            value={newTodo?.priority ?? 'very-high'}
+            value={newTodo.priority}
+            onChange={(v: TodoPriority) => {
+              setNewTodo((prev) => ({
+                ...prev,
+                priority: v,
+              }));
+            }}
           />
 
           <Flex justify="center" align="flex-end">
@@ -91,4 +107,4 @@ const CreateTodoDialog: React.FC<CreateTodoDialog> = ({
   );
 };
 
-export { CreateTodoDialog };
+export { CreateTodoModal };

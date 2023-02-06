@@ -15,11 +15,11 @@ import { useDisclosure } from '@mantine/hooks';
 import { isEmpty, isNil } from 'lodash';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { ChangeEventHandler, useEffect, useState } from 'react';
 
 import { RemoveButton } from '@/components/buttons/remove';
-import { CreateTodoDialog } from '@/components/modals/create-todo';
-import { RemoveItemDialog } from '@/components/modals/remove-item';
+import { CreateTodoModal } from '@/components/modals/create-todo';
+import { RemoveItemModal } from '@/components/modals/remove-item';
 import { PageHeader } from '@/components/page-header';
 import { cySelectors } from '@/constants/cy-selectors';
 import { fontSizes } from '@/theme/typography';
@@ -34,7 +34,7 @@ const ActivityDetail = () => {
   // TODO: Don't refetch activity
   const { isLoading, activity, update, todoMutation } = useActivity(Number(id));
 
-  const [opened, { toggle }] = useDisclosure(false);
+  const [opened, { toggle, close }] = useDisclosure(false);
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
 
@@ -79,6 +79,9 @@ const ActivityDetail = () => {
 
   const [deleteTarget, setDeleteTarget] = useState<Todo | null>(null);
 
+  const [editTarget, setEditTarget] = useState<Todo | null>(null);
+  const isEditMode = !isNil(editTarget);
+
   return (
     <Flex direction="column" h="100%">
       {!isLoading && (
@@ -119,6 +122,7 @@ const ActivityDetail = () => {
             }
             trailing={
               <Button
+                size="lg"
                 aria-label="tambah"
                 data-cy={cySelectors['todo-add-button']}
                 onClick={() => {
@@ -150,7 +154,7 @@ const ActivityDetail = () => {
           </Center>
         ) : (
           <>
-            <RemoveItemDialog
+            <RemoveItemModal
               isLoading={isLoading}
               dialogMessage={
                 deleteTarget && (
@@ -172,25 +176,45 @@ const ActivityDetail = () => {
                 setDeleteTarget(null);
               }}
             />
-            <CreateTodoDialog
-              opened={opened}
-              onClose={toggle}
+            <CreateTodoModal
+              opened={opened || isEditMode}
+              onClose={() => {
+                if (isEditMode) {
+                  setEditTarget(null);
+                } else {
+                  toggle();
+                }
+              }}
+              initialTodo={editTarget}
               cyId={cySelectors['modal-add']}
               onConfirmClick={async (newTodo: NewTodo) => {
                 if (!isNil(newTodo)) {
-                  await todoMutation.add({
-                    activityId: Number(id),
-                    todo: newTodo,
-                  });
-                  toggle();
+                  if (isEditMode) {
+                    await todoMutation.update({
+                      todo: newTodo,
+                      todoId: editTarget.id,
+                    });
+                    setEditTarget(null);
+                  } else {
+                    await todoMutation.add({
+                      activityId: Number(id),
+                      todo: newTodo,
+                    });
+                    toggle();
+                  }
                 }
               }}
             />
             <TodoList
               todos={activity.todos || []}
               onDeleteClick={(todo: Todo) => setDeleteTarget(todo)}
-              onEditClick={(todo: Todo) => {}}
-              onCheckClick={(todo: Todo) => {}}
+              onEditClick={(todo: Todo) => setEditTarget(todo)}
+              onCheckClick={async (todo: Todo) =>
+                await todoMutation.update({
+                  todoId: todo.id,
+                  todo,
+                })
+              }
             />
           </>
         )}
@@ -231,7 +255,12 @@ const TodoList: React.FC<TodoListProps> = ({
               key={item.id}
               todo={item}
               onDeleteIconClick={() => onDeleteClick(item)}
-              onCheckClick={() => onCheckClick(item)}
+              onCheckClick={({ currentTarget }) =>
+                onCheckClick({
+                  ...item,
+                  isActive: !currentTarget.checked,
+                })
+              }
               onEditIconClick={() => onEditClick(item)}
             />
           ))}
@@ -244,7 +273,7 @@ const TodoList: React.FC<TodoListProps> = ({
 interface TodoItemProps {
   todo: Todo;
   onDeleteIconClick: VoidFunction;
-  onCheckClick: VoidFunction;
+  onCheckClick: ChangeEventHandler<HTMLInputElement>;
   onEditIconClick: VoidFunction;
 }
 
@@ -255,7 +284,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   onCheckClick,
 }) => {
   return (
-    <Card>
+    <Card shadow="lg">
       <Flex>
         <Flex style={{ flex: 1 }} align="center" columnGap={8} w="100%">
           <Checkbox checked={!todo.isActive} onChange={onCheckClick} />

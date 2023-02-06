@@ -24,7 +24,26 @@ const todoAPIHandlers = {
       }),
     });
   },
-  async delete(urL: string, { arg }: { arg: { todoId: number } }) {
+  async update(
+    url: string,
+    { arg }: { arg: { todoId: number; todo: NewTodo } },
+  ) {
+    const { todoId, todo } = arg;
+    return fetch(`${todoBaseUrl}/${todoId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: todo.title,
+        priority: todo.priority,
+        ...(typeof todo?.isActive === 'boolean'
+          ? { is_active: todo.isActive }
+          : {}),
+      }),
+    });
+  },
+  async delete(url: string, { arg }: { arg: { todoId: number } }) {
     const { todoId } = arg;
     return fetch(`${todoBaseUrl}/${todoId}`, {
       method: 'DELETE',
@@ -53,7 +72,6 @@ const todoAPIHandlers = {
         ),
       );
   },
-  async update() {},
 };
 
 const activityAPIHandlers = {

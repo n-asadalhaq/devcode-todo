@@ -18,7 +18,8 @@ interface Todo {
   deletedAt?: Date | null;
 }
 
-type NewTodo = Pick<Todo, 'title' | 'priority'>;
+type NewTodo = Pick<Todo, 'title' | 'priority'> &
+  Partial<Pick<Todo, 'isActive'>>;
 
 type TodoPriority = (typeof todoPriority)[number];
 

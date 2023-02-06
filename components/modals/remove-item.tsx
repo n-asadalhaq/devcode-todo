@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 // import { cySelectors } from '@/constants/cy-selectors';
 
-interface RemoveItemDialog extends ModalProps {
+interface RemoveItemModal extends ModalProps {
   dialogMessage: string | React.ReactNode;
   // TODO: better typing
   // cyId: keyof typeof cySelectors;
@@ -12,7 +12,7 @@ interface RemoveItemDialog extends ModalProps {
   isLoading?: boolean;
 }
 
-export const RemoveItemDialog: React.FC<RemoveItemDialog> = ({
+export const RemoveItemModal: React.FC<RemoveItemModal> = ({
   opened,
   dialogMessage,
   cyId,

@@ -1,7 +1,7 @@
 export const todoPriority = [
   'very-high',
   'high',
-  'medium',
+  'normal',
   'low',
   'very-low',
 ] as const;

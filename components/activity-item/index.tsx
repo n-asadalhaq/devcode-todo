@@ -5,7 +5,7 @@ import { Activity } from '@/types/index';
 
 interface ActivityItemProps {
   activity: Activity;
-  onDeleteIconClick?: VoidFunction;
+  onDeleteIconClick?: React.MouseEventHandler<HTMLButtonElement>;
   onClick?: VoidFunction;
 }
 

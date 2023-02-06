@@ -34,7 +34,10 @@ const ActivityList: React.FC<ActivityListProps> = ({
             <ActivityItem
               key={item.id}
               activity={item}
-              onDeleteIconClick={() => onDeleteClick(item)}
+              onDeleteIconClick={(e) => {
+                e.stopPropagation();
+                onDeleteClick(item);
+              }}
               onClick={() => {
                 router.push(`/activity/${item.id}`);
               }}

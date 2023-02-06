@@ -1,4 +1,4 @@
-import { AppShell, Header, Flex, Title } from '@mantine/core';
+import { AppShell, Header, Flex, Title, Box } from '@mantine/core';
 
 import { cySelectors } from '@/constants/cy-selectors';
 
@@ -28,7 +28,11 @@ const DefaultLayout: React.FC<{ children: React.ReactNode }> = ({
         },
       })}
     >
-      {children}
+      <Flex h="100%" align="center" direction="column" w="100%">
+        <Box maw={1000} pt={28} w="100%">
+          {children}
+        </Box>
+      </Flex>
     </AppShell>
   );
 };

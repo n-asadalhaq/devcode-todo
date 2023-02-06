@@ -72,59 +72,64 @@ const ActivityDetail = () => {
   };
 
   return (
-    <Flex direction="column" px={220} h="100%">
+    <Flex direction="column" h="100%">
       {!isLoading && (
-        <PageHeader
-          title={
-            <Flex direction="row" w={405}>
-              <UnstyledButton onClick={() => router.back()}>
-                <Image
-                  src="/assets/icons/chevron-left.svg"
-                  width={24}
-                  height={24}
-                  alt="Pencil"
-                />
-              </UnstyledButton>
-              <Box style={{ flex: 2 }}>{renderActivityTitle()}</Box>
-              <UnstyledButton
-                onClick={async () => {
-                  if (isEditingTitle) {
-                    await update({ id: Number(id), title: activityTitle });
-                    setIsEditingTitle(false);
-                  } else {
-                    setIsEditingTitle(true);
-                  }
+        <Box pb={54}>
+          <PageHeader
+            title={
+              <Flex direction="row" miw={405} w="auto" columnGap={22}>
+                <UnstyledButton
+                  onClick={() => router.back()}
+                  data-cy={cySelectors['todo-back-button']}
+                >
+                  <Image
+                    src="/assets/icons/chevron-left.svg"
+                    width={24}
+                    height={24}
+                    alt="Pencil"
+                  />
+                </UnstyledButton>
+                <Box style={{ flex: 2 }}>{renderActivityTitle()}</Box>
+                <UnstyledButton
+                  onClick={async () => {
+                    if (isEditingTitle) {
+                      await update({ id: Number(id), title: activityTitle });
+                      setIsEditingTitle(false);
+                    } else {
+                      setIsEditingTitle(true);
+                    }
+                  }}
+                >
+                  <Image
+                    src="/assets/icons/edit-icon.svg"
+                    width={24}
+                    height={24}
+                    alt="Pencil"
+                  />
+                </UnstyledButton>
+              </Flex>
+            }
+            trailing={
+              <Button
+                aria-label="tambah"
+                data-cy={cySelectors['todo-add-button']}
+                onClick={() => {
+                  toggle();
                 }}
+                leftIcon={
+                  <Image
+                    src="/assets/icons/add.svg"
+                    width={14}
+                    height={14}
+                    alt="Tambah"
+                  />
+                }
               >
-                <Image
-                  src="/assets/icons/edit-icon.svg"
-                  width={24}
-                  height={24}
-                  alt="Pencil"
-                />
-              </UnstyledButton>
-            </Flex>
-          }
-          trailing={
-            <Button
-              aria-label="tambah"
-              data-cy={cySelectors['activity-add-button']}
-              onClick={() => {
-                toggle();
-              }}
-              leftIcon={
-                <Image
-                  src="/assets/icons/add.svg"
-                  width={14}
-                  height={14}
-                  alt="Tambah"
-                />
-              }
-            >
-              Tambah
-            </Button>
-          }
-        />
+                Tambah
+              </Button>
+            }
+          />
+        </Box>
       )}
 
       <Box w="100%" mih="100%">

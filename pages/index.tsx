@@ -70,32 +70,34 @@ function Home() {
   const [deleteTarget, setDeleteTarget] = useState<Activity | null>(null);
 
   return (
-    <Flex direction="column" px={pageSpacings.horizontal} h="100%">
-      <PageHeader
-        title="Activity"
-        titleProps={{
-          'data-cy': cySelectors['activity-title'],
-        }}
-        trailing={
-          <Button
-            aria-label="tambah"
-            data-cy={cySelectors['activity-add-button']}
-            onClick={() => {
-              triggerCreate();
-            }}
-            leftIcon={
-              <Image
-                src="/assets/icons/add.svg"
-                width={14}
-                height={14}
-                alt="Tambah"
-              />
-            }
-          >
-            Tambah
-          </Button>
-        }
-      />
+    <Flex direction="column" h="100%">
+      <Box pb={54}>
+        <PageHeader
+          title="Activity"
+          titleProps={{
+            'data-cy': cySelectors['activity-title'],
+          }}
+          trailing={
+            <Button
+              aria-label="tambah"
+              data-cy={cySelectors['activity-add-button']}
+              onClick={() => {
+                triggerCreate();
+              }}
+              leftIcon={
+                <Image
+                  src="/assets/icons/add.svg"
+                  width={14}
+                  height={14}
+                  alt="Tambah"
+                />
+              }
+            >
+              Tambah
+            </Button>
+          }
+        />
+      </Box>
       <Box w="100%" mih="100%">
         {isLoading || isValidating || isCreateLoading || isDeleteLoading ? (
           <Center h="100%">

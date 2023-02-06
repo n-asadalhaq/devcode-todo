@@ -6,6 +6,7 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 
 import { ActivityList } from '@/components/activity-list';
+import { NotificationModal } from '@/components/modals/notification';
 import { RemoveItemModal } from '@/components/modals/remove-item';
 import { PageHeader } from '@/components/page-header';
 import { baseUrl, email } from '@/constants/api';
@@ -68,6 +69,7 @@ function Home() {
     useSWRMutation(`${baseUrl}/activity-groups`, deleteActivity);
 
   const [deleteTarget, setDeleteTarget] = useState<Activity | null>(null);
+  const [showNotification, setShowNotification] = useState<boolean>(false);
 
   return (
     <Flex direction="column" h="100%">
@@ -108,6 +110,12 @@ function Home() {
           </Center>
         ) : (
           <>
+            <NotificationModal
+              opened={showNotification}
+              onClose={() => {
+                setShowNotification(false);
+              }}
+            />
             <RemoveItemModal
               isLoading={isDeleteLoading}
               dialogMessage={
@@ -127,6 +135,7 @@ function Home() {
                 if (isNil(deleteTarget)) return;
 
                 await triggerDelete({ id: deleteTarget.id });
+                setShowNotification(true);
                 setDeleteTarget(null);
               }}
             />

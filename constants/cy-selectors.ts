@@ -26,6 +26,8 @@ export const cySelectors = {
   'activity-item-delete-button': 'activity-item-delete-button',
   'modal-delete': 'modal-delete',
   'modal-information': 'modal-information',
+  'modal-information-title': 'modal-information-title',
+  'modal-information-icon': 'modal-information-icon',
   'modal-add': 'modal-add',
   'modal-add-name-input': 'modal-add-name-input',
   'modal-add-priority-dropdown': 'modal-add-priority-dropdown',

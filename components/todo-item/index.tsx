@@ -24,7 +24,11 @@ const TodoItem: React.FC<TodoItemProps> = ({
     <Card shadow="xl" radius="lg" p={27}>
       <Flex>
         <Flex style={{ flex: 1 }} align="center" columnGap={8} w="100%">
-          <Checkbox checked={!todo.isActive} onChange={onCheckClick} />
+          <Checkbox
+            checked={!todo.isActive}
+            onChange={onCheckClick}
+            data-cy={cySelectors['todo-item-checkbox']}
+          />
           <Text
             size="md"
             weight="normal"

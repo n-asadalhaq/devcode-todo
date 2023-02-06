@@ -301,7 +301,11 @@ const TodoItem: React.FC<TodoItemProps> = ({
           </UnstyledButton>
         </Flex>
         <Flex align="center">
-          <RemoveButton onClick={onDeleteIconClick} alt="Hapus Todo" />
+          <RemoveButton
+            cyId={cySelectors['todo-item-delete-button']}
+            onClick={onDeleteIconClick}
+            alt="Hapus Todo"
+          />
         </Flex>
       </Flex>
     </Card>

@@ -2,12 +2,30 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 
 import { baseUrl, email } from '@/constants/api';
+import { RawTodo, Todo } from '@/types/index';
 
 const todoAPIHandlers = {
   // TODO: Implement
   async add() {},
   async delete() {},
-  async fetchAll() {},
+  async fetchAll(
+    url: string,
+    { activityId }: { activityId: number },
+  ): Promise<Todo[]> {
+    return fetch(`${baseUrl}/todo-items?activity_group_id=${activityId}`)
+      .then((res) => res.json())
+      .then((res) =>
+        res.data.map(
+          (item: RawTodo): Todo => ({
+            ...item,
+            createdAt: new Date(item.created_at),
+            updatedAt: item?.updated_at ? new Date(item?.updated_at) : null,
+            deletedAt: item?.deleted_at ? new Date(item?.deleted_at) : null,
+            isActive: Boolean(Number(item.is_active)),
+          }),
+        ),
+      );
+  },
   async update() {},
   // async fetchOne() {},
 };
@@ -60,10 +78,17 @@ const useActivity = (activityId: number) => {
     data: todos,
     isLoading: fetchTodosLoading,
     isValidating,
-  } = useSWR(swrTodoId, todoAPIHandlers.fetchAll, { fallback: {} });
+  } = useSWR(
+    swrTodoId,
+    (url) => todoAPIHandlers.fetchAll(url, { activityId: activityId }),
+    { fallbackData: [] },
+  );
 
   return {
-    activity,
+    activity: {
+      ...activity,
+      todos: todos,
+    },
     update: triggerUpdateActivity,
     todoMutation: {
       add: triggerAddTodo,
@@ -71,7 +96,6 @@ const useActivity = (activityId: number) => {
       update: triggerUpdateTodo,
     },
     isMutating: isAddTodoLoading || isDeleteTodoLoading || isUpdateTodoLoading,
-    data: todos,
     isLoading: fetchActivityLoading,
   };
 };

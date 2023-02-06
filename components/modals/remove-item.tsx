@@ -1,6 +1,8 @@
 import { Box, Button, Flex, Modal, ModalProps, Text } from '@mantine/core';
 import Image from 'next/image';
 
+import { cySelectors } from '@/constants/cy-selectors';
+
 // import { cySelectors } from '@/constants/cy-selectors';
 
 interface RemoveItemModal extends ModalProps {
@@ -42,7 +44,12 @@ export const RemoveItemModal: React.FC<RemoveItemModal> = ({
             dialogMessage
           )}
           <Flex justify="center" align="center" columnGap={20}>
-            <Button bg="gray.1" size="lg" onClick={onClose}>
+            <Button
+              bg="gray.1"
+              size="lg"
+              onClick={onClose}
+              data-cy={cySelectors['modal-delete-cancel-button']}
+            >
               <Text color="gray.4" size="md" weight="600">
                 Batal
               </Text>
@@ -52,6 +59,7 @@ export const RemoveItemModal: React.FC<RemoveItemModal> = ({
               size="lg"
               loading={isLoading}
               onClick={onConfirmClick}
+              data-cy={cySelectors['modal-delete-confirm-button']}
             >
               <Text color="white" size="md" weight="600">
                 Hapus

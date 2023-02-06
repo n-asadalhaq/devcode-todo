@@ -12,10 +12,11 @@ import {
   Title,
   UnstyledButton,
 } from '@mantine/core';
-import { initial, isNil, startCase } from 'lodash';
+import { initial, isEmpty, isNil, startCase } from 'lodash';
 import Image from 'next/image';
 import { forwardRef, useEffect, useState } from 'react';
 
+import { cySelectors } from '@/constants/cy-selectors';
 import { todoPriority } from '@/constants/todo-priority';
 import { priorityColors } from '@/theme/colors';
 import { NewTodo, Todo, TodoPriority } from '@/types/index';
@@ -104,6 +105,7 @@ const CreateTodoModal: React.FC<CreateTodoModal> = ({
           <TextInput
             size="md"
             label="NAMA LIST ITEM"
+            data-cy={cySelectors['modal-add-name-input']}
             onChange={({ target }) => {
               setNewTodo((prev) => ({
                 ...prev,
@@ -113,6 +115,7 @@ const CreateTodoModal: React.FC<CreateTodoModal> = ({
             value={newTodo?.title}
           />
           <Select
+            data-cy={cySelectors['modal-add-priority-dropdown']}
             size="md"
             label="PRIORITY"
             data={priorityOptions}
@@ -130,13 +133,14 @@ const CreateTodoModal: React.FC<CreateTodoModal> = ({
       </Box>
       <Divider color="gray.2" />{' '}
       <Flex justify="flex-end" align="center" px="lg" py="lg">
-        <Button size="lg" loading={isLoading}>
-          <Text
-            color="white"
-            size="md"
-            weight="600"
-            onClick={() => onConfirmClick(newTodo)}
-          >
+        <Button
+          size="lg"
+          loading={isLoading}
+          disabled={isEmpty(newTodo.title)}
+          data-cy={cySelectors['modal-add-save-button']}
+          onClick={() => onConfirmClick(newTodo)}
+        >
+          <Text color="white" size="md" weight="600">
             Simpan
           </Text>
         </Button>
@@ -166,7 +170,7 @@ const Bullet: React.FC<{ bulletColor: string }> = ({ bulletColor }) => (
 
 const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
   ({ label, bulletColor, ...others }: ItemProps, ref) => (
-    <div ref={ref} {...others}>
+    <div ref={ref} {...others} data-cy={cySelectors['modal-add-priority-item']}>
       <Group noWrap>
         <Flex direction="row" columnGap={8} align="center">
           <Bullet bulletColor={bulletColor} />

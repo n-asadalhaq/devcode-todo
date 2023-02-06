@@ -1,65 +1,144 @@
-import Head from 'next/head'
-import Image from 'next/image'
+import { Box, Button, Center, Text, Flex, Loader } from '@mantine/core';
+import { isNil } from 'lodash';
+import Image from 'next/image';
+import { useState } from 'react';
+import useSWR from 'swr';
+import useSWRMutation from 'swr/mutation';
 
-import styles from '@/pages/index.module.css'
+import { ActivityList } from '@/components/activity-list';
+import { RemoveItemDialog } from '@/components/modals/remove-item';
+import { PageHeader } from '@/components/page-header';
+import { baseUrl, email } from '@/constants/api';
+import { cySelectors } from '@/constants/cy-selectors';
+import { Activity } from '@/types/index';
 
-export default function Home() {
+const pageSpacings = {
+  horizontal: '220px',
+};
+
+const fetchActivities = (url: string) =>
+  fetch(`${url}?email=${email}`)
+    .then((res) => res.json())
+    .then((res) => ({
+      ...res,
+      data: res.data.map((item: any) => ({
+        ...item,
+        createdAt: new Date(item?.created_at),
+      })),
+    }));
+
+const deleteActivity = async (
+  url: string,
+  { arg }: { arg: { id: number } },
+) => {
+  return await fetch(`${url}/${arg.id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: '',
+  });
+};
+
+const createActivity = async (url: string) => {
+  return await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title: 'New Activity',
+      email,
+    }),
+  });
+};
+
+function Home() {
+  const { data, isLoading, isValidating } = useSWR(
+    `${baseUrl}/activity-groups`,
+    fetchActivities,
+  );
+
+  const activities: Activity[] = isNil(data?.data) ? [] : data.data;
+
+  const { trigger: triggerCreate, isMutating: isCreateLoading } =
+    useSWRMutation(`${baseUrl}/activity-groups`, createActivity);
+
+  const { trigger: triggerDelete, isMutating: isDeleteLoading } =
+    useSWRMutation(`${baseUrl}/activity-groups`, deleteActivity);
+
+  const [deleteTarget, setDeleteTarget] = useState<Activity | null>(null);
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <Flex direction="column" h="100%">
+      <Box pb={54}>
+        <PageHeader
+          title="Activity"
+          titleProps={{
+            'data-cy': cySelectors['activity-title'],
+          }}
+          trailing={
+            <Button
+              aria-label="tambah"
+              data-cy={cySelectors['activity-add-button']}
+              onClick={() => {
+                triggerCreate();
+              }}
+              leftIcon={
+                <Image
+                  src="/assets/icons/add.svg"
+                  width={14}
+                  height={14}
+                  alt="Tambah"
+                />
+              }
+            >
+              Tambah
+            </Button>
+          }
+        />
+      </Box>
+      <Box w="100%" mih="100%">
+        {isLoading || isValidating || isCreateLoading || isDeleteLoading ? (
+          <Center h="100%">
+            <Flex direction="column" align="center" justify="center">
+              <Loader />
+              <Text color="gray">Memuat activity</Text>
+            </Flex>
+          </Center>
+        ) : (
+          <>
+            <RemoveItemDialog
+              isLoading={isDeleteLoading}
+              dialogMessage={
+                deleteTarget && (
+                  <Text size="md" align="center">
+                    Apakah anda yakin menghapus activity
+                    <Text weight="700">“{deleteTarget.title}”?</Text>
+                  </Text>
+                )
+              }
+              cyId={cySelectors['modal-delete']}
+              onClose={() => {
+                setDeleteTarget(null);
+              }}
+              opened={!isNil(deleteTarget)}
+              onConfirmClick={async () => {
+                if (isNil(deleteTarget)) return;
 
-      <main>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing <code>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a href="https://vercel.com/new" className={styles.card}>
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
-  )
+                await triggerDelete({ id: deleteTarget.id });
+                setDeleteTarget(null);
+              }}
+            />
+            <ActivityList
+              activities={activities}
+              onDeleteClick={(id) => setDeleteTarget(id)}
+            />
+          </>
+        )}
+      </Box>
+    </Flex>
+  );
 }
+
+export default Home;

@@ -22,6 +22,14 @@ const typography = {
         fontSize: fontSizes.lg,
         fontWeight: '700',
       },
+      h3: {
+        fontSize: fontSizes.md,
+        fontWeight: '700',
+      },
+      h4: {
+        fontSize: fontSizes.md,
+        fontWeight: '500',
+      },
     },
   },
   fontSizes,

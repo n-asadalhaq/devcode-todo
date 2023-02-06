@@ -249,7 +249,7 @@ const TodoList: React.FC<TodoListProps> = ({
           />
         </Flex>
       ) : (
-        <Flex direction="column" rowGap={26}>
+        <Flex direction="column" rowGap={10}>
           {todos.map((item) => (
             <TodoItem
               key={item.id}
@@ -284,7 +284,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   onCheckClick,
 }) => {
   return (
-    <Card shadow="lg">
+    <Card shadow="xl" radius="lg" p={27}>
       <Flex>
         <Flex style={{ flex: 1 }} align="center" columnGap={8} w="100%">
           <Checkbox checked={!todo.isActive} onChange={onCheckClick} />

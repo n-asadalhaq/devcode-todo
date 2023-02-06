@@ -1,3 +1,5 @@
+import { todoPriority } from '@/constants/todo-priority';
+
 interface Activity {
   title: string;
   id: number;
@@ -7,7 +9,7 @@ interface Activity {
 
 interface Todo {
   id: number;
-  activity_group_id: string;
+  activityGroupId: string;
   title: string;
   isActive: boolean;
   priority: TodoPriority;
@@ -16,7 +18,9 @@ interface Todo {
   deletedAt?: Date | null;
 }
 
-type TodoPriority = 'very-high' | 'high' | 'medium' | 'low' | 'very-low';
+type NewTodo = Pick<Todo, 'title' | 'priority'>;
+
+type TodoPriority = (typeof todoPriority)[number];
 
 // enum TodoPriority {
 //   'very-high' = 'very-high',
@@ -37,4 +41,4 @@ interface RawTodo {
   deleted_at?: string;
 }
 
-export type { Activity, Todo, TodoPriority, RawTodo };
+export type { Activity, Todo, TodoPriority, RawTodo, NewTodo };

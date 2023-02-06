@@ -11,15 +11,16 @@ import {
   Card,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
+import { CreateTodoDialog } from '@/components/modals/create-todo';
 import { PageHeader } from '@/components/page-header';
 import { cySelectors } from '@/constants/cy-selectors';
 import { fontSizes } from '@/theme/typography';
-import { Todo } from '@/types/index';
+import { NewTodo, Todo } from '@/types/index';
 import { useActivity } from 'hooks/use-activity';
 
 const ActivityDetail = () => {
@@ -28,7 +29,7 @@ const ActivityDetail = () => {
   const { id } = router.query;
 
   // TODO: Don't refetch activity
-  const { isLoading, activity, update } = useActivity(Number(id));
+  const { isLoading, activity, update, todoMutation } = useActivity(Number(id));
 
   const [opened, { toggle }] = useDisclosure(false);
 
@@ -143,12 +144,28 @@ const ActivityDetail = () => {
             </Flex>
           </Center>
         ) : (
-          <TodoList
-            todos={activity.todos || []}
-            onDeleteClick={(todo: Todo) => {}}
-            onEditClick={(todo: Todo) => {}}
-            onCheckClick={(todo: Todo) => {}}
-          />
+          <>
+            <CreateTodoDialog
+              opened={opened}
+              onClose={toggle}
+              cyId={cySelectors['modal-add']}
+              onConfirmClick={async (newTodo: NewTodo) => {
+                if (!isNil(newTodo)) {
+                  await todoMutation.add({
+                    activityId: Number(id),
+                    todo: newTodo,
+                  });
+                  toggle();
+                }
+              }}
+            />
+            <TodoList
+              todos={activity.todos || []}
+              onDeleteClick={(todo: Todo) => {}}
+              onEditClick={(todo: Todo) => {}}
+              onCheckClick={(todo: Todo) => {}}
+            />
+          </>
         )}
       </Box>
     </Flex>

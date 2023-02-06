@@ -2,12 +2,38 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 
 import { baseUrl, email } from '@/constants/api';
-import { RawTodo, Todo } from '@/types/index';
+import { NewTodo, RawTodo, Todo } from '@/types/index';
+
+const todoBaseUrl = `${baseUrl}/todo-items`;
 
 const todoAPIHandlers = {
-  // TODO: Implement
-  async add() {},
-  async delete() {},
+  async add(
+    url: string,
+    { arg }: { arg: { activityId: number; todo: NewTodo } },
+  ) {
+    const { activityId, todo } = arg;
+    return await fetch(todoBaseUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: todo.title,
+        activity_group_id: activityId,
+        priority: todo.priority,
+      }),
+    });
+  },
+  async delete(urL: string, { arg }: { arg: { activityId: number } }) {
+    const { activityId } = arg;
+    return fetch(`${todoBaseUrl}/${activityId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: '',
+    });
+  },
   async fetchAll(
     url: string,
     { activityId }: { activityId: number },
@@ -18,6 +44,7 @@ const todoAPIHandlers = {
         res.data.map(
           (item: RawTodo): Todo => ({
             ...item,
+            activityGroupId: item.activity_group_id,
             createdAt: new Date(item.created_at),
             updatedAt: item?.updated_at ? new Date(item?.updated_at) : null,
             deletedAt: item?.deleted_at ? new Date(item?.deleted_at) : null,
@@ -27,7 +54,6 @@ const todoAPIHandlers = {
       );
   },
   async update() {},
-  // async fetchOne() {},
 };
 
 const activityAPIHandlers = {

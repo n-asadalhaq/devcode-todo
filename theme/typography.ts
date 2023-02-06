@@ -8,13 +8,7 @@ const fontSizes: MantineSizes = {
   xl: 36,
 };
 
-// type DeepPartial<T> = T extends object
-//   ? {
-//       [P in keyof T]?: DeepPartial<T[P]>;
-//     }
-//   : T;
-
-export const typography = {
+const typography = {
   fontFamily: 'Poppins, sans-serif',
   headings: {
     fontFamily: 'Poppins, sans-serif',
@@ -32,3 +26,5 @@ export const typography = {
   },
   fontSizes,
 };
+
+export { typography, fontSizes };

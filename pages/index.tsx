@@ -6,12 +6,11 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 
 import { ActivityList } from '@/components/activity-list';
-import { RemoveItemDialog } from '@/components/dialogs/remove-item';
+import { RemoveItemDialog } from '@/components/modals/remove-item';
 import { PageHeader } from '@/components/page-header';
+import { baseUrl, email } from '@/constants/api';
 import { cySelectors } from '@/constants/cy-selectors';
 import { Activity } from '@/types/index';
-
-import { baseUrl, email } from '../constants/api';
 
 const pageSpacings = {
   horizontal: '220px',

@@ -1,10 +1,9 @@
 import { Box, Button, Flex, Title } from '@mantine/core';
-import { ReactNode } from 'react';
 
 interface PageHeaderProps {
-  title: string;
+  title: string | React.ReactNode;
   titleProps?: Record<string, any>;
-  trailing?: ReactNode;
+  trailing?: React.ReactNode;
 }
 
 export const PageHeader: React.FC<PageHeaderProps> = ({
@@ -15,9 +14,13 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   return (
     <Box w="100%">
       <Flex align="center" justify="space-between">
-        <Title size="h1" order={2} {...titleProps}>
-          {title}
-        </Title>
+        {typeof title === 'string' ? (
+          <Title size="h1" order={2} {...titleProps}>
+            {title}
+          </Title>
+        ) : (
+          title
+        )}
         {trailing && trailing}
       </Flex>
     </Box>

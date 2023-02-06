@@ -1,6 +1,7 @@
 import { Box, Flex, SimpleGrid } from '@mantine/core';
 import { isEmpty } from 'lodash';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 import { ActivityItem } from '@/components/activity-item';
 import { Activity } from '@/types/index';
@@ -14,6 +15,8 @@ const ActivityList: React.FC<ActivityListProps> = ({
   activities,
   onDeleteClick,
 }) => {
+  const router = useRouter();
+
   return (
     <Box w="100%">
       {isEmpty(activities) ? (
@@ -32,6 +35,9 @@ const ActivityList: React.FC<ActivityListProps> = ({
               key={item.id}
               activity={item}
               onDeleteIconClick={() => onDeleteClick(item)}
+              onClick={() => {
+                router.push(`/activity/${item.id}`);
+              }}
             />
           ))}
         </SimpleGrid>

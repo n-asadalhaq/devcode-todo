@@ -20,7 +20,8 @@
       "@/constants/*": ["constants/*"],
       "@/pages/*": ["pages/*"],
       "@/styles/*": ["styles/*"],
-      "@/types/*": ["types/*"]
+      "@/types/*": ["types/*"],
+      "@/theme/*": ["theme/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "types.d.ts"],

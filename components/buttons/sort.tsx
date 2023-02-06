@@ -85,6 +85,11 @@ const SortButton: React.FC<SortButtonProps> = ({
                 padding: '14px 20px',
               }}
               key={opt}
+              data-cy={
+                opt === selectedOption
+                  ? cySelectors['sort-selection-selected']
+                  : 'false'
+              }
             >
               <Flex columnGap="md" align="center" justify="flex-start" w="100%">
                 <SortOptionIcon

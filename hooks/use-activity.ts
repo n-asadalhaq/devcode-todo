@@ -118,7 +118,10 @@ const useActivity = (activityId: number) => {
   const {
     trigger: triggerUpdateActivity,
     isMutating: isUpdateActivityLoading,
-  } = useSWRMutation(`activity/${activityId}`, activityAPIHandlers.update);
+  } = useSWRMutation(
+    () => (Number.isNaN(activityId) ? null : `activity/${activityId}`),
+    activityAPIHandlers.update,
+  );
 
   const {
     data: todos,

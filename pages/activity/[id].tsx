@@ -39,14 +39,14 @@ const ActivityDetail = () => {
 
   const [activityTitle, setActivityTitle] = useState(activity.title);
 
-  useEffect(() => {
-    if (isEmpty(activityTitle)) setActivityTitle(activity.title);
-  }, [activity.title, activityTitle]);
+  const [editTarget, setEditTarget] = useState<Todo | null>(null);
+  const isEditMode = !isNil(editTarget);
 
   const renderActivityTitle = () => {
     if (isEditingTitle) {
       return (
         <TextInput
+          onBlur={() => setIsEditingTitle(false)}
           styles={{
             input: {
               fontWeight: 'bold',
@@ -70,7 +70,7 @@ const ActivityDetail = () => {
     }
 
     return (
-      <UnstyledButton onClick={() => setIsEditingTitle(true)}>
+      <UnstyledButton>
         <Title order={2} size="h1" data-cy={cySelectors['todo-title']}>
           {activity.title}
         </Title>
@@ -80,10 +80,13 @@ const ActivityDetail = () => {
 
   const [deleteTarget, setDeleteTarget] = useState<Todo | null>(null);
 
-  const [editTarget, setEditTarget] = useState<Todo | null>(null);
-  const isEditMode = !isNil(editTarget);
-
   const [selectedSort, setSelectedSort] = useState<SortOption>('date-asc');
+
+  useEffect(() => {
+    if (!isEditingTitle && !isEmpty(activityTitle)) {
+      update({ id: Number(id), title: activityTitle });
+    }
+  }, [isEditingTitle, update, id, activityTitle]);
 
   return (
     <Flex direction="column" h="100%">
@@ -108,9 +111,9 @@ const ActivityDetail = () => {
                   data-cy={cySelectors['todo-title-edit-button']}
                   onClick={async () => {
                     if (isEditingTitle) {
-                      await update({ id: Number(id), title: activityTitle });
                       setIsEditingTitle(false);
                     } else {
+                      setActivityTitle(activity.title);
                       setIsEditingTitle(true);
                     }
                   }}
@@ -120,7 +123,6 @@ const ActivityDetail = () => {
                     width={24}
                     height={24}
                     alt="Pencil"
-                    data-cy={cySelectors['todo-item-edit-button']}
                   />
                 </UnstyledButton>
               </Flex>

@@ -5,6 +5,7 @@ import { ChangeEventHandler } from 'react';
 import { cySelectors } from '@/constants/cy-selectors';
 import { Todo } from '@/types/index';
 
+import { Bullet } from '../bullet';
 import { RemoveButton } from '../buttons/remove';
 
 interface TodoItemProps {
@@ -23,12 +24,13 @@ const TodoItem: React.FC<TodoItemProps> = ({
   return (
     <Card shadow="xl" radius="lg" p={27}>
       <Flex>
-        <Flex style={{ flex: 1 }} align="center" columnGap={8} w="100%">
+        <Flex style={{ flex: 1 }} align="center" columnGap={12} w="100%">
           <Checkbox
             checked={!todo.isActive}
             onChange={onCheckClick}
             data-cy={cySelectors['todo-item-checkbox']}
           />
+          <Bullet priority={todo.priority} />
           <Text
             size="md"
             weight="normal"

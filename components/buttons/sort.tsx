@@ -15,7 +15,6 @@ interface SortButtonProps {
 }
 
 const SortButton: React.FC<SortButtonProps> = ({
-  cyId,
   onChange,
   alt,
   selectedOption,
@@ -72,8 +71,8 @@ const SortButton: React.FC<SortButtonProps> = ({
           {sortOptions.map((opt, index) => (
             <Card
               onClick={() => {
-                onChange(opt);
                 setOpened(false);
+                onChange(opt);
               }}
               style={{
                 borderBottom:

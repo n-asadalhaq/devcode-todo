@@ -45,6 +45,7 @@ export const cySelectors = {
   'todo-item-title': 'todo-item-title',
   'todo-item-edit-button': 'todo-item-edit-button',
   'todo-item-checkbox': 'todo-item-checkbox',
+  'todo-item-priority-indicator': 'todo-item-priority-indicator',
   'sort-selection': 'sort-selection',
   'sort-selection-selected': 'sort-selection-selected',
   'sort-selection-icon': 'sort-selection-icon',

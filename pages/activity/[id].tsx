@@ -70,9 +70,11 @@ const ActivityDetail = () => {
     }
 
     return (
-      <Title order={2} size="h1" data-cy={cySelectors['todo-title']}>
-        {activity.title}
-      </Title>
+      <UnstyledButton onClick={() => setIsEditingTitle(true)}>
+        <Title order={2} size="h1" data-cy={cySelectors['todo-title']}>
+          {activity.title}
+        </Title>
+      </UnstyledButton>
     );
   };
 

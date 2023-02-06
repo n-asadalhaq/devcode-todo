@@ -24,9 +24,9 @@ const todoAPIHandlers = {
       }),
     });
   },
-  async delete(urL: string, { arg }: { arg: { activityId: number } }) {
-    const { activityId } = arg;
-    return fetch(`${todoBaseUrl}/${activityId}`, {
+  async delete(urL: string, { arg }: { arg: { todoId: number } }) {
+    const { todoId } = arg;
+    return fetch(`${todoBaseUrl}/${todoId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

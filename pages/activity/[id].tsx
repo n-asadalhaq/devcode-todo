@@ -9,6 +9,7 @@ import {
   TextInput,
   UnstyledButton,
   Card,
+  Checkbox,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { isEmpty, isNil } from 'lodash';
@@ -16,7 +17,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
+import { RemoveButton } from '@/components/buttons/remove';
 import { CreateTodoDialog } from '@/components/modals/create-todo';
+import { RemoveItemDialog } from '@/components/modals/remove-item';
 import { PageHeader } from '@/components/page-header';
 import { cySelectors } from '@/constants/cy-selectors';
 import { fontSizes } from '@/theme/typography';
@@ -73,6 +76,8 @@ const ActivityDetail = () => {
       </Title>
     );
   };
+
+  const [deleteTarget, setDeleteTarget] = useState<Todo | null>(null);
 
   return (
     <Flex direction="column" h="100%">
@@ -145,6 +150,28 @@ const ActivityDetail = () => {
           </Center>
         ) : (
           <>
+            <RemoveItemDialog
+              isLoading={isLoading}
+              dialogMessage={
+                deleteTarget && (
+                  <Text size="md" align="center">
+                    Apakah anda yakin menghapus item
+                    <Text weight="700">“{deleteTarget.title}”?</Text>
+                  </Text>
+                )
+              }
+              cyId={cySelectors['modal-delete']}
+              onClose={() => {
+                setDeleteTarget(null);
+              }}
+              opened={!isNil(deleteTarget)}
+              onConfirmClick={async () => {
+                if (isNil(deleteTarget)) return;
+
+                await todoMutation.delete({ todoId: deleteTarget.id });
+                setDeleteTarget(null);
+              }}
+            />
             <CreateTodoDialog
               opened={opened}
               onClose={toggle}
@@ -161,7 +188,7 @@ const ActivityDetail = () => {
             />
             <TodoList
               todos={activity.todos || []}
-              onDeleteClick={(todo: Todo) => {}}
+              onDeleteClick={(todo: Todo) => setDeleteTarget(todo)}
               onEditClick={(todo: Todo) => {}}
               onCheckClick={(todo: Todo) => {}}
             />
@@ -193,7 +220,8 @@ const TodoList: React.FC<TodoListProps> = ({
             width={767}
             height={490}
             src="/assets/illustrations/todo-empty-state.svg"
-            alt="You don't have any activity. Click add button to create one."
+            alt="You don't have any todo. Click add button to create one."
+            data-cy={cySelectors['todo-empty-state']}
           />
         </Flex>
       ) : (
@@ -228,7 +256,25 @@ const TodoItem: React.FC<TodoItemProps> = ({
 }) => {
   return (
     <Card>
-      <Text>{todo.title}</Text>
+      <Flex>
+        <Flex style={{ flex: 1 }} align="center" columnGap={8} w="100%">
+          <Checkbox checked={!todo.isActive} onChange={onCheckClick} />
+          <Text size="md" weight="normal">
+            {todo.title}
+          </Text>
+          <UnstyledButton onClick={onEditIconClick}>
+            <Image
+              src="/assets/icons/edit-icon.svg"
+              width={24}
+              height={24}
+              alt="Pencil"
+            />
+          </UnstyledButton>
+        </Flex>
+        <Flex align="center">
+          <RemoveButton onClick={onDeleteIconClick} alt="Hapus Todo" />
+        </Flex>
+      </Flex>
     </Card>
   );
 };

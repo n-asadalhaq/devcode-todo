@@ -47,13 +47,13 @@ export const RemoveItemDialog: React.FC<RemoveItemDialog> = ({
                 Batal
               </Text>
             </Button>
-            <Button bg="red.2" size="lg" loading={isLoading}>
-              <Text
-                color="white"
-                size="md"
-                weight="600"
-                onClick={onConfirmClick}
-              >
+            <Button
+              bg="red.2"
+              size="lg"
+              loading={isLoading}
+              onClick={onConfirmClick}
+            >
+              <Text color="white" size="md" weight="600">
                 Hapus
               </Text>
             </Button>

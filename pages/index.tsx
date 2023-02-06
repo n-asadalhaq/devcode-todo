@@ -13,10 +13,6 @@ import { baseUrl, email } from '@/constants/api';
 import { cySelectors } from '@/constants/cy-selectors';
 import { Activity } from '@/types/index';
 
-const pageSpacings = {
-  horizontal: '220px',
-};
-
 const fetchActivities = (url: string) =>
   fetch(`${url}?email=${email}`)
     .then((res) => res.json())

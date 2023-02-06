@@ -2,14 +2,11 @@ import { Flex, Modal, ModalProps, Text } from '@mantine/core';
 import Image from 'next/image';
 
 import { cySelectors } from '@/constants/cy-selectors';
-import { NewTodo, Todo } from '@/types/index';
-
-// import { cySelectors } from '@/constants/cy-selectors';
 
 interface NotificationModal extends ModalProps {
-  initialTodo?: Todo | null;
-  onConfirmClick: (newTodo: NewTodo) => void;
   isLoading?: boolean;
+  opened: boolean;
+  onClose: VoidFunction;
 }
 
 const NotificationModal: React.FC<NotificationModal> = ({

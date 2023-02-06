@@ -40,4 +40,8 @@ export const cySelectors = {
   'todo-empty-state': 'todo-empty-state',
   'todo-item-delete-button': 'todo-item-delete-button',
   'todo-item-checkbox': 'todo-item-checkbox',
+  'sort-selection': 'sort-selection',
+  'sort-selection-selected': 'sort-selection-selected',
+  'sort-selection-icon': 'sort-selection-icon',
+  'sort-selection-title': 'sort-selection-title',
 };

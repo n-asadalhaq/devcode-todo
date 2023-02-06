@@ -1,7 +1,5 @@
 import { MantineThemeComponents } from '@mantine/styles/lib/theme/types/MantineTheme';
 
-import { colors } from './colors';
-
 export const components: MantineThemeComponents = {
   Button: {
     defaultProps: {
@@ -12,7 +10,7 @@ export const components: MantineThemeComponents = {
   Input: {
     styles: {
       input: {
-        borderColor: colors.gray![1],
+        borderColor: '#88888888',
         height: 52,
         fontWeight: 'normal',
       },
@@ -21,7 +19,7 @@ export const components: MantineThemeComponents = {
   Select: {
     styles: {
       input: {
-        borderColor: colors.gray![1],
+        borderColor: '#88888888',
         height: 52,
         fontWeight: 'normal',
       },

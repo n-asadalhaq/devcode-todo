@@ -15,13 +15,14 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
+import { AddButton, SortButton } from '@/components/buttons';
 import { CreateTodoModal } from '@/components/modals/create-todo';
 import { RemoveItemModal } from '@/components/modals/remove-item';
 import { PageHeader } from '@/components/page-header';
 import { TodoList } from '@/components/todo-list';
 import { cySelectors } from '@/constants/cy-selectors';
 import { fontSizes } from '@/theme/typography';
-import { NewTodo, Todo } from '@/types/index';
+import { NewTodo, SortOption, Todo } from '@/types/index';
 import { useActivity } from 'hooks/use-activity';
 
 const ActivityDetail = () => {
@@ -80,6 +81,8 @@ const ActivityDetail = () => {
   const [editTarget, setEditTarget] = useState<Todo | null>(null);
   const isEditMode = !isNil(editTarget);
 
+  const [selectedSort, setSelectedSort] = useState<SortOption>('date-asc');
+
   return (
     <Flex direction="column" h="100%">
       {!isLoading && (
@@ -119,24 +122,21 @@ const ActivityDetail = () => {
               </Flex>
             }
             trailing={
-              <Button
-                size="lg"
-                aria-label="tambah"
-                data-cy={cySelectors['todo-add-button']}
-                onClick={() => {
-                  toggle();
-                }}
-                leftIcon={
-                  <Image
-                    src="/assets/icons/add.svg"
-                    width={14}
-                    height={14}
-                    alt="Tambah"
-                  />
-                }
-              >
-                Tambah
-              </Button>
+              <Flex align="center" columnGap={18}>
+                <SortButton
+                  selectedOption={selectedSort}
+                  onChange={(v) => setSelectedSort(v)}
+                  alt="Sort"
+                  cyId={cySelectors['todo-sort-button']}
+                />
+                <AddButton
+                  cyId={cySelectors['todo-add-button']}
+                  alt="Tambah"
+                  onClick={() => {
+                    toggle();
+                  }}
+                />
+              </Flex>
             }
           />
         </Box>
@@ -204,7 +204,9 @@ const ActivityDetail = () => {
               }}
             />
             <TodoList
-              todos={activity.todos || []}
+              todos={
+                sortTodos({ todos: activity.todos, method: selectedSort }) || []
+              }
               onDeleteClick={(todo: Todo) => setDeleteTarget(todo)}
               onEditClick={(todo: Todo) => setEditTarget(todo)}
               onCheckClick={async (todo: Todo) => {
@@ -219,6 +221,47 @@ const ActivityDetail = () => {
       </Box>
     </Flex>
   );
+};
+
+const sortTodos = ({
+  todos,
+  method,
+}: {
+  todos: Todo[];
+  method: SortOption;
+}) => {
+  switch (method) {
+    case 'alpha-asc':
+      return sortMethods.alphabetAsc(todos);
+    case 'alpha-desc':
+      return sortMethods.alphabetDesc(todos);
+    case 'active-first':
+      return sortMethods.activeFirst(todos);
+    case 'date-desc':
+      return sortMethods.dateDesc(todos);
+    default:
+      return sortMethods.dateAsc(todos);
+  }
+};
+
+const sortMethods = {
+  dateAsc(todos: Todo[]) {
+    // return todos.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+    return todos.sort((a, b) => a.id - b.id);
+  },
+  dateDesc(todos: Todo[]) {
+    // return todos.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    return todos.sort((a, b) => b.id - a.id);
+  },
+  alphabetAsc(todos: Todo[]) {
+    return todos.sort((a, b) => a.title.localeCompare(b.title));
+  },
+  alphabetDesc(todos: Todo[]) {
+    return todos.sort((a, b) => b.title.localeCompare(a.title));
+  },
+  activeFirst(todos: Todo[]) {
+    return todos.sort((a, b) => (a.isActive ? -1 : 0));
+  },
 };
 
 export default ActivityDetail;

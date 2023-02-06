@@ -9,7 +9,7 @@ const DefaultLayout: React.FC<{ children: React.ReactNode }> = ({
     <AppShell
       padding="md"
       header={
-        <Header height={105}>
+        <Header height={105} data-cy={cySelectors['header-background']}>
           <Flex h="100%" bg="blue.3" px="220px" align="center">
             <Title
               data-cy={cySelectors['header-title']}

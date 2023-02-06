@@ -1,3 +1,4 @@
+import { sortOptions } from '@/constants/sort-options';
 import { todoPriority } from '@/constants/todo-priority';
 
 interface Activity {
@@ -23,14 +24,6 @@ type NewTodo = Pick<Todo, 'title' | 'priority'> &
 
 type TodoPriority = (typeof todoPriority)[number];
 
-// enum TodoPriority {
-//   'very-high' = 'very-high',
-//   'high' = 'high',
-//   'medium' = 'medium',
-//   'low' = 'low',
-//   'very-low' = 'very-low',
-// }
-
 interface RawTodo {
   id: number;
   activity_group_id: string;
@@ -42,4 +35,6 @@ interface RawTodo {
   deleted_at?: string;
 }
 
-export type { Activity, Todo, TodoPriority, RawTodo, NewTodo };
+type SortOption = (typeof sortOptions)[number];
+
+export type { Activity, Todo, TodoPriority, RawTodo, NewTodo, SortOption };

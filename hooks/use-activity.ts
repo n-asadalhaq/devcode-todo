@@ -21,6 +21,7 @@ const todoAPIHandlers = {
         title: todo.title,
         activity_group_id: activityId,
         priority: todo.priority,
+        created_at: new Date(),
       }),
     });
   },
@@ -37,6 +38,7 @@ const todoAPIHandlers = {
       body: JSON.stringify({
         title: todo.title,
         priority: todo.priority,
+        updated_at: new Date(),
         ...(typeof todo?.isActive === 'boolean'
           ? { is_active: todo.isActive }
           : {}),

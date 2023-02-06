@@ -105,6 +105,7 @@ const CreateTodoModal: React.FC<CreateTodoModal> = ({
           <TextInput
             size="md"
             label="NAMA LIST ITEM"
+            data-cy={cySelectors['modal-add-name-input']}
             onChange={({ target }) => {
               setNewTodo((prev) => ({
                 ...prev,
@@ -169,7 +170,7 @@ const Bullet: React.FC<{ bulletColor: string }> = ({ bulletColor }) => (
 
 const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
   ({ label, bulletColor, ...others }: ItemProps, ref) => (
-    <div ref={ref} {...others}>
+    <div ref={ref} {...others} data-cy={cySelectors['modal-add-priority-item']}>
       <Group noWrap>
         <Flex direction="row" columnGap={8} align="center">
           <Bullet bulletColor={bulletColor} />

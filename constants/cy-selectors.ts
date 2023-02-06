@@ -31,6 +31,7 @@ export const cySelectors = {
   'modal-add': 'modal-add',
   'modal-add-name-input': 'modal-add-name-input',
   'modal-add-priority-dropdown': 'modal-add-priority-dropdown',
+  'modal-add-priority-item': 'modal-add-priority-item',
   'modal-add-save-button': 'modal-add-save-button',
   'modal-delete-cancel-button': 'modal-delete-cancel-button',
   'modal-delete-confirm-button': 'modal-delete-confirm-button',

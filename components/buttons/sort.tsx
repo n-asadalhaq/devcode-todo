@@ -42,7 +42,7 @@ const SortButton: React.FC<SortButtonProps> = ({
     >
       <Popover.Target>
         <UnstyledButton
-          data-cy={cyId}
+          data-cy={cySelectors['todo-sort-button']}
           style={{
             outline: 'none',
           }}
@@ -88,7 +88,7 @@ const SortButton: React.FC<SortButtonProps> = ({
               data-cy={
                 opt === selectedOption
                   ? cySelectors['sort-selection-selected']
-                  : 'false'
+                  : cySelectors['sort-selection']
               }
             >
               <Flex columnGap="md" align="center" justify="flex-start" w="100%">

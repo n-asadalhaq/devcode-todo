@@ -103,6 +103,7 @@ const ActivityDetail = () => {
                 </UnstyledButton>
                 <Box style={{ flex: 2 }}>{renderActivityTitle()}</Box>
                 <UnstyledButton
+                  data-cy={cySelectors['todo-title-edit-button']}
                   onClick={async () => {
                     if (isEditingTitle) {
                       await update({ id: Number(id), title: activityTitle });

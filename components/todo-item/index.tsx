@@ -25,7 +25,11 @@ const TodoItem: React.FC<TodoItemProps> = ({
       <Flex>
         <Flex style={{ flex: 1 }} align="center" columnGap={8} w="100%">
           <Checkbox checked={!todo.isActive} onChange={onCheckClick} />
-          <Text size="md" weight="normal" data-cy={cySelectors['todo-title']}>
+          <Text
+            size="md"
+            weight="normal"
+            data-cy={cySelectors['todo-item-title']}
+          >
             {todo.title}
           </Text>
           <UnstyledButton onClick={onEditIconClick}>
@@ -34,6 +38,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
               width={24}
               height={24}
               alt="Pencil"
+              data-cy={cySelectors['todo-item-edit-button']}
             />
           </UnstyledButton>
         </Flex>

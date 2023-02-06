@@ -70,7 +70,7 @@ const ActivityDetail = () => {
     }
 
     return (
-      <Title order={2} size="h1" data-cy={cySelectors['activity-title']}>
+      <Title order={2} size="h1" data-cy={cySelectors['todo-title']}>
         {activity.title}
       </Title>
     );
@@ -98,7 +98,7 @@ const ActivityDetail = () => {
                     src="/assets/icons/chevron-left.svg"
                     width={24}
                     height={24}
-                    alt="Pencil"
+                    alt="Chevron"
                   />
                 </UnstyledButton>
                 <Box style={{ flex: 2 }}>{renderActivityTitle()}</Box>
@@ -117,6 +117,7 @@ const ActivityDetail = () => {
                     width={24}
                     height={24}
                     alt="Pencil"
+                    data-cy={cySelectors['todo-item-edit-button']}
                   />
                 </UnstyledButton>
               </Flex>

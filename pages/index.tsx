@@ -6,7 +6,7 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 
 import { ActivityList } from '@/components/activity-list';
-import { RemoveItemDialog } from '@/components/modals/remove-item';
+import { RemoveItemModal } from '@/components/modals/remove-item';
 import { PageHeader } from '@/components/page-header';
 import { baseUrl, email } from '@/constants/api';
 import { cySelectors } from '@/constants/cy-selectors';
@@ -108,7 +108,7 @@ function Home() {
           </Center>
         ) : (
           <>
-            <RemoveItemDialog
+            <RemoveItemModal
               isLoading={isDeleteLoading}
               dialogMessage={
                 deleteTarget && (

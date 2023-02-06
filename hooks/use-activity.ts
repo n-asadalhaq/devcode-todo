@@ -2,14 +2,76 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 
 import { baseUrl, email } from '@/constants/api';
+import { NewTodo, RawTodo, Todo } from '@/types/index';
+
+const todoBaseUrl = `${baseUrl}/todo-items`;
 
 const todoAPIHandlers = {
-  // TODO: Implement
-  async add() {},
-  async delete() {},
-  async fetchAll() {},
-  async update() {},
-  // async fetchOne() {},
+  async add(
+    url: string,
+    { arg }: { arg: { activityId: number; todo: NewTodo } },
+  ) {
+    const { activityId, todo } = arg;
+    return await fetch(todoBaseUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: todo.title,
+        activity_group_id: activityId,
+        priority: todo.priority,
+      }),
+    });
+  },
+  async update(
+    url: string,
+    { arg }: { arg: { todoId: number; todo: NewTodo } },
+  ) {
+    const { todoId, todo } = arg;
+    return fetch(`${todoBaseUrl}/${todoId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: todo.title,
+        priority: todo.priority,
+        ...(typeof todo?.isActive === 'boolean'
+          ? { is_active: todo.isActive }
+          : {}),
+      }),
+    });
+  },
+  async delete(url: string, { arg }: { arg: { todoId: number } }) {
+    const { todoId } = arg;
+    return fetch(`${todoBaseUrl}/${todoId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: '',
+    });
+  },
+  async fetchAll(
+    url: string,
+    { activityId }: { activityId: number },
+  ): Promise<Todo[]> {
+    return fetch(`${baseUrl}/todo-items?activity_group_id=${activityId}`)
+      .then((res) => res.json())
+      .then((res) =>
+        res.data.map(
+          (item: RawTodo): Todo => ({
+            ...item,
+            activityGroupId: item.activity_group_id,
+            createdAt: new Date(item.created_at),
+            updatedAt: item?.updated_at ? new Date(item?.updated_at) : null,
+            deletedAt: item?.deleted_at ? new Date(item?.deleted_at) : null,
+            isActive: Boolean(Number(item.is_active)),
+          }),
+        ),
+      );
+  },
 };
 
 const activityAPIHandlers = {
@@ -60,10 +122,17 @@ const useActivity = (activityId: number) => {
     data: todos,
     isLoading: fetchTodosLoading,
     isValidating,
-  } = useSWR(swrTodoId, todoAPIHandlers.fetchAll, { fallback: {} });
+  } = useSWR(
+    swrTodoId,
+    (url) => todoAPIHandlers.fetchAll(url, { activityId: activityId }),
+    { fallbackData: [] },
+  );
 
   return {
-    activity,
+    activity: {
+      ...activity,
+      todos: todos,
+    },
     update: triggerUpdateActivity,
     todoMutation: {
       add: triggerAddTodo,
@@ -71,7 +140,6 @@ const useActivity = (activityId: number) => {
       update: triggerUpdateTodo,
     },
     isMutating: isAddTodoLoading || isDeleteTodoLoading || isUpdateTodoLoading,
-    data: todos,
     isLoading: fetchActivityLoading,
   };
 };

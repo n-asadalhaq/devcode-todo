@@ -24,7 +24,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
           <Image
             width={767}
             height={490}
-            src="/assets/illustrations/empty-state.svg"
+            src="/assets/illustrations/activity-empty-state.svg"
             alt="You don't have any activity. Click add button to create one."
           />
         </Flex>
